@@ -4,15 +4,59 @@
 #include <math.h>
 #include "image.h"
 
+int get_index(image im, int c,int h,int w) {
+    // get index in CHW format
+    // i.e channel, row, column
+    // so data[0] = channel 0, row 0, column 0
+    // data[1] = channel 0, row 0, column 1
+    // data[2] = channel 0, row 0, column 2
+    // so index of c,h,w will be = c * H * W + h * W + w
+    int index = (c * im.h * im.w) + (h * im.w) + w;
+    return index;
+}
+
+int clamp(l, length) {
+    // clamp width and height
+    if ((l+1) > length) {
+        l = length - 1; // 0 based indexing
+    } else if (l < 0) {
+        l = 0;
+    }
+    return l; 
+}
+
+int clamp_check(l, length) {
+    // are we clamping?
+    if ((l+1) > length || l < 0) {
+        return 1;
+    }
+    return 0;
+}
+
 float get_pixel(image im, int c, int h, int w)
 {
-    // TODO Fill this in
-    return 0;
+    float pixel;
+    int width = im.w;
+    int height = im.h;
+    int index;
+    h = clamp(h,height);
+    w = clamp(w,width);
+    // grab pixel
+    // stored in C,H,W
+    index = get_index(im, c, h, w);
+    pixel = im.data[index];
+    return pixel;
 }
 
 void set_pixel(image im, int c, int h, int w, float v)
 {
-    // TODO Fill this in
+    int index;
+    if (clamp_check(h,im.h) || clamp_check(w,im.w)) {
+        return;
+    } else {
+        index = get_index(im, c, h, w);
+        im.data[index] = v;
+    }
 }
 
 image copy_image(image im)
