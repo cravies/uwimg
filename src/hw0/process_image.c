@@ -62,7 +62,15 @@ void set_pixel(image im, int c, int h, int w, float v)
 image copy_image(image im)
 {
     image copy = make_image(im.c, im.h, im.w);
-    // TODO Fill this in
+    /*
+    // slow as 
+    for (int i=0; i<(im.c*im.h*im.w); i++) {
+        copy.data[i] = im.data[i];
+    }
+    */
+    // length in memory
+    int len = sizeof(float) * (im.c*im.h*im.w);
+    memcpy(copy.data, im.data, len);
     return copy;
 }
 
