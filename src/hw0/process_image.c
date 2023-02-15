@@ -62,12 +62,6 @@ void set_pixel(image im, int c, int h, int w, float v)
 image copy_image(image im)
 {
     image copy = make_image(im.c, im.h, im.w);
-    /*
-    // slow as 
-    for (int i=0; i<(im.c*im.h*im.w); i++) {
-        copy.data[i] = im.data[i];
-    }
-    */
     // length in memory
     int len = sizeof(float) * (im.c*im.h*im.w);
     memcpy(copy.data, im.data, len);
@@ -78,7 +72,20 @@ image rgb_to_grayscale(image im)
 {
     assert(im.c == 3);
     image gray = make_image(1, im.h, im.w);
-    // TODO Fill this in
+    int index;
+    float R,G,B;
+    // compress to grayscale
+    for (int i=0; i<im.h; i++) {
+        for (int j=0; j<im.w; j++) {
+            // get index for our gray array
+            index = get_index(gray,0,i,j);
+            // get our R.G.B values from our color array
+            R = im.data[get_index(im,0,i,j)];
+            G = im.data[get_index(im,1,i,j)];
+            B = im.data[get_index(im,2,i,j)];
+            gray.data[index] = 0.299*R + 0.587*G + 0.114*B;
+        }
+    }
     return gray;
 }
 
